@@ -1,0 +1,438 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudentCourse | Management Dashboard</title>
+<style>
+:root {
+  --bg:#080b12; --panel:#111724; --border:#222d40;
+  --text:#edf3ff; --muted:#91a0b8; --blue:#2864ed;
+  --green:#20b486; --red:#e34e68;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:Inter,"Segoe UI",Arial,sans-serif;font-size:14px}
+header{background:#0d121e;border-bottom:1px solid var(--border);
+  padding:20px max(5%,calc((100% - 1440px)/2));
+  display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:14px}
+.logo{background:linear-gradient(135deg,#4389ff,#7b4dff);border-radius:14px;
+  width:50px;height:50px;display:grid;place-items:center;font-size:25px;font-weight:800}
+.brand h1{font-size:22px;margin:0}.brand p{color:var(--muted);margin:7px 0 0}
+.status{color:#52dcb1;background:#103026;border:1px solid #1d4b3e;
+  padding:10px 14px;border-radius:25px;font-size:12px}
+main{max-width:1440px;margin:auto;padding:38px 24px 60px}
+h2{font-size:25px;margin:0 0 10px}h3{font-size:18px;margin:0 0 9px}
+.subtitle{color:var(--muted);margin:0 0 25px;line-height:1.6}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:30px}
+.card,.section{background:var(--panel);border:1px solid var(--border);
+  border-radius:18px;padding:24px;min-width:0}
+.metric-icon{display:grid;place-items:center;width:42px;height:42px;
+  border-radius:12px;background:#1c2c4c;color:#8bb1ff;font-size:22px;margin-bottom:18px}
+.metric-label{color:var(--muted);font-size:13px}
+.metric-value{font-size:32px;font-weight:750;margin-top:8px}
+.section{margin-bottom:24px}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:24px}
+.section-head p{margin:0;color:var(--muted);line-height:1.6}
+.tag{font-size:11px;color:#91baff;background:#1b2b48;padding:7px 10px;border-radius:20px;white-space:nowrap}
+.form-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.course-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+label{display:block;color:#b7c4d9;font-size:12px;font-weight:600;margin-bottom:9px}
+input,select{width:100%;min-width:0;background:#0a101c;color:var(--text);
+  border:1px solid #2a354a;border-radius:10px;padding:14px;font:inherit;outline:none}
+input:focus,select:focus{border-color:#5287ff}
+input::placeholder{color:#61708a}
+.actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+button{cursor:pointer;border:1px solid transparent;border-radius:10px;padding:11px 15px;
+  font:inherit;font-weight:650;transition:.15s}
+button:hover{filter:brightness(1.13)}
+.primary{background:var(--blue);color:white}
+.secondary{background:#1c2638;border-color:#303d53;color:#dce6f8}
+.danger{background:#391c29;border-color:#693043;color:#ff9aab}
+.small{padding:8px 11px;font-size:12px}
+.form-actions{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap}
+.filters{display:grid;grid-template-columns:1.1fr 1.1fr 1.1fr auto;gap:12px;align-items:end;margin-bottom:18px}
+.table-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:600px}
+th{text-align:left;text-transform:uppercase;letter-spacing:.5px;font-size:11px;
+  color:#91a9ce;background:#172131;padding:15px}
+td{padding:14px 15px;border-bottom:1px solid #202a3a;color:#e1e9f7}
+tbody tr:hover{background:#151d2b}
+.pill{display:inline-block;border-radius:20px;padding:6px 10px;background:#1c3152;color:#9bc0ff}
+.empty{text-align:center!important;color:var(--muted);padding:28px!important}
+.toast{position:fixed;right:22px;top:22px;z-index:10;max-width:min(390px,calc(100% - 44px));
+  padding:15px 20px;border:1px solid #32654f;border-radius:12px;background:#102b23;
+  color:#a4f4d4;box-shadow:0 15px 45px #0008}
+.toast.error{background:#351923;border-color:#753446;color:#ffb4c0}
+footer{text-align:center;color:#70819d;padding:12px 20px 28px}
+@media(max-width:900px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+.form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.filters{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){header{padding:16px}.brand h1{font-size:18px}
+main{padding:25px 14px}.cards{gap:10px}.card{padding:16px}
+.metric-value{font-size:26px}.section{padding:16px}
+.form-grid,.course-grid,.filters{grid-template-columns:1fr}
+.status{display:none}.section-head{align-items:flex-start}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="logo">S</div>
+    <div><h1>Student<span style="color:#6c94ff">Course</span></h1>
+      <p>Management dashboard · Local MongoDB</p></div>
+  </div>
+  <span class="status">● Local system</span>
+</header>
+
+<main>
+  <h2>Overview</h2>
+  <p class="subtitle">Manage student records, courses and academic performance in one place.</p>
+
+  <div class="cards">
+    <div class="card"><div class="metric-icon">♟</div><div class="metric-label">Total Students</div><div class="metric-value" id="totalStudents">0</div></div>
+    <div class="card"><div class="metric-icon">▤</div><div class="metric-label">Total Courses</div><div class="metric-value" id="totalCourses">0</div></div>
+    <div class="card"><div class="metric-icon">↗</div><div class="metric-label">Average Marks</div><div class="metric-value" id="averageMarks">0.0</div></div>
+    <div class="card"><div class="metric-icon">★</div><div class="metric-label">Highest Marks</div><div class="metric-value" id="highestMarks">0</div></div>
+  </div>
+
+  <section class="section" id="studentFormSection">
+    <div class="section-head"><div><h3>Student Management</h3><p>Add, edit and maintain student records.</p></div><span class="tag">student_master</span></div>
+    <form id="studentForm">
+      <div class="form-grid">
+        <div><label for="sid">Student ID (SID)</label><input id="sid" required maxlength="40" placeholder="e.g. 101"></div>
+        <div><label for="name">Full name</label><input id="name" required maxlength="100" placeholder="Student name"></div>
+        <div><label for="age">Age</label><input id="age" type="number" required min="1" max="100" placeholder="20"></div>
+        <div><label for="marks">Marks (0–100)</label><input id="marks" type="number" required min="0" max="100" step="any" placeholder="85"></div>
+      </div>
+      <div class="form-actions">
+        <button class="primary" type="submit" id="studentSubmit">+ Add student</button>
+        <button class="secondary" type="button" id="studentCancel" hidden>Cancel edit</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><div><h3>Student Records</h3><p>Filter and sort students using database aggregation.</p></div></div>
+    <div class="filters">
+      <div><label for="minMarks">Minimum marks</label><input id="minMarks" type="number" min="0" max="100" placeholder="All marks"></div>
+      <div><label for="sortBy">Sort by</label><select id="sortBy"><option value="sid">Student ID</option><option value="name">Name</option><option value="marks">Marks</option><option value="age">Age</option></select></div>
+      <div><label for="sortOrder">Order</label><select id="sortOrder"><option value="asc">Ascending</option><option value="desc">Descending</option></select></div>
+      <div class="actions"><button class="secondary" id="applyFilter" type="button">Apply</button><button class="secondary" id="resetFilter" type="button">Reset</button></div>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>SID</th><th>Name</th><th>Age</th><th>Marks</th><th>Actions</th></tr></thead>
+      <tbody id="studentRows"><tr><td colspan="5" class="empty">Loading students...</td></tr></tbody>
+    </table></div>
+  </section>
+
+  <section class="section" id="courseFormSection">
+    <div class="section-head"><div><h3>Course Management</h3><p>Assign courses to existing students.</p></div><span class="tag">course_master</span></div>
+    <form id="courseForm">
+      <div class="form-grid course-grid">
+        <div><label for="cid">Course ID (CID)</label><input id="cid" required maxlength="40" placeholder="e.g. C01"></div>
+        <div><label for="courseSid">Student</label><select id="courseSid" required><option value="">Select a student</option></select></div>
+        <div><label for="cname">Course name</label><input id="cname" required maxlength="100" placeholder="e.g. MongoDB"></div>
+      </div>
+      <div class="form-actions">
+        <button class="primary" type="submit" id="courseSubmit">+ Add course</button>
+        <button class="secondary" type="button" id="courseCancel" hidden>Cancel edit</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><div><h3>Course Records</h3><p>Manage course IDs, student references and course names.</p></div></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>CID</th><th>Student ID</th><th>Student name</th><th>Course</th><th>Actions</th></tr></thead>
+      <tbody id="courseRows"><tr><td colspan="5" class="empty">Loading courses...</td></tr></tbody>
+    </table></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><div><h3>Student &amp; Course Overview</h3><p>Related collections combined with MongoDB $lookup.</p></div><span class="tag">Joined view</span></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>SID</th><th>Student</th><th>Age</th><th>Marks</th><th>Enrolled courses</th></tr></thead>
+      <tbody id="overviewRows"><tr><td colspan="5" class="empty">Loading overview...</td></tr></tbody>
+    </table></div>
+  </section>
+</main>
+<footer>Student Course Management System · Node.js · Express · MongoDB · Mongoose</footer>
+<div id="toast" class="toast" role="status" hidden></div>
+
+<script>
+const $ = id => document.getElementById(id);
+let editingSid = null;
+let editingCid = null;
+let toastTimer;
+
+async function api(url, options = {}) {
+  const response = await fetch(url, {
+    ...options,
+    headers: { "Content-Type": "application/json", ...(options.headers || {}) }
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(data.message || "Request failed.");
+  return data;
+}
+
+function notify(message, error = false) {
+  const toast = $("toast");
+  toast.textContent = message;
+  toast.classList.toggle("error", error);
+  toast.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.hidden = true, 3500);
+}
+
+function cell(value) {
+  const td = document.createElement("td");
+  td.textContent = value == null || value === "" ? "—" : String(value);
+  return td;
+}
+
+function actionButton(label, className, handler) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = className + " small";
+  button.textContent = label;
+  button.addEventListener("click", handler);
+  return button;
+}
+
+function emptyRow(tbody, columns, message) {
+  const tr = document.createElement("tr");
+  const td = document.createElement("td");
+  td.colSpan = columns;
+  td.className = "empty";
+  td.textContent = message;
+  tr.appendChild(td);
+  tbody.replaceChildren(tr);
+}
+
+async function loadDashboard() {
+  const d = await api("/api/dashboard");
+  $("totalStudents").textContent = d.totalStudents;
+  $("totalCourses").textContent = d.totalCourses;
+  $("averageMarks").textContent = Number(d.averageMarks).toFixed(1);
+  $("highestMarks").textContent = d.highestMarks;
+}
+
+async function loadStudents() {
+  const params = new URLSearchParams({
+    sortBy: $("sortBy").value,
+    order: $("sortOrder").value
+  });
+  if ($("minMarks").value !== "") params.set("minMarks", $("minMarks").value);
+
+  const students = await api("/api/students?" + params.toString());
+  const tbody = $("studentRows");
+  tbody.replaceChildren();
+
+  if (!students.length) return emptyRow(tbody, 5, "No students found.");
+
+  students.forEach(student => {
+    const tr = document.createElement("tr");
+    tr.append(cell(student.sid), cell(student.name), cell(student.age));
+    const marksTd = document.createElement("td");
+    const pill = document.createElement("span");
+    pill.className = "pill";
+    pill.textContent = student.marks;
+    marksTd.append(pill);
+    tr.append(marksTd);
+
+    const actions = document.createElement("td");
+    actions.append(
+      actionButton("Edit", "secondary", () => editStudent(student)),
+      actionButton("Delete", "danger", () => deleteStudent(student.sid))
+    );
+    tr.append(actions);
+    tbody.append(tr);
+  });
+}
+
+async function loadStudentOptions(selectedSid = "") {
+  const students = await api("/api/student-options");
+  const select = $("courseSid");
+  select.replaceChildren(new Option("Select a student", ""));
+  students.forEach(student => {
+    select.add(new Option(`${student.name} (SID: ${student.sid})`, student.sid));
+  });
+  if (selectedSid) select.value = selectedSid;
+}
+
+async function loadCourses() {
+  const courses = await api("/api/courses");
+  const tbody = $("courseRows");
+  tbody.replaceChildren();
+
+  if (!courses.length) return emptyRow(tbody, 5, "No courses yet.");
+
+  courses.forEach(course => {
+    const tr = document.createElement("tr");
+    tr.append(cell(course.cid), cell(course.sid), cell(course.studentName), cell(course.cname));
+    const actions = document.createElement("td");
+    actions.append(
+      actionButton("Edit", "secondary", () => editCourse(course)),
+      actionButton("Delete", "danger", () => deleteCourse(course.cid))
+    );
+    tr.append(actions);
+    tbody.append(tr);
+  });
+}
+
+async function loadOverview() {
+  const students = await api("/api/overview");
+  const tbody = $("overviewRows");
+  tbody.replaceChildren();
+
+  if (!students.length) return emptyRow(tbody, 5, "No students to display.");
+
+  students.forEach(student => {
+    const tr = document.createElement("tr");
+    tr.append(cell(student.sid), cell(student.name), cell(student.age), cell(student.marks));
+    const coursesTd = document.createElement("td");
+    const courses = (student.courses || []).map(course => `${course.cname} (${course.cid})`);
+    coursesTd.textContent = courses.length ? courses.join(", ") : "No courses assigned";
+    tr.append(coursesTd);
+    tbody.append(tr);
+  });
+}
+
+async function refreshAll() {
+  const results = await Promise.allSettled([
+    loadDashboard(), loadStudents(), loadStudentOptions(), loadCourses(), loadOverview()
+  ]);
+  const failed = results.find(result => result.status === "rejected");
+  if (failed) notify(failed.reason.message, true);
+}
+
+function editStudent(student) {
+  editingSid = student.sid;
+  $("sid").value = student.sid;
+  $("sid").disabled = true;
+  $("name").value = student.name;
+  $("age").value = student.age;
+  $("marks").value = student.marks;
+  $("studentSubmit").textContent = "Save student changes";
+  $("studentCancel").hidden = false;
+  $("studentFormSection").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function resetStudentForm() {
+  editingSid = null;
+  $("studentForm").reset();
+  $("sid").disabled = false;
+  $("studentSubmit").textContent = "+ Add student";
+  $("studentCancel").hidden = true;
+}
+
+$("studentCancel").addEventListener("click", resetStudentForm);
+
+$("studentForm").addEventListener("submit", async event => {
+  event.preventDefault();
+  const payload = {
+    sid: $("sid").value.trim(),
+    name: $("name").value.trim(),
+    age: $("age").value,
+    marks: $("marks").value
+  };
+
+  try {
+    const result = editingSid
+      ? await api("/api/students/" + encodeURIComponent(editingSid), {
+          method: "PUT", body: JSON.stringify(payload)
+        })
+      : await api("/api/students", { method: "POST", body: JSON.stringify(payload) });
+
+    notify(result.message);
+    resetStudentForm();
+    await refreshAll();
+  } catch (error) {
+    notify(error.message, true);
+  }
+});
+
+async function deleteStudent(sid) {
+  if (!confirm(`Delete student ${sid}?`)) return;
+  try {
+    const result = await api("/api/students/" + encodeURIComponent(sid), { method: "DELETE" });
+    notify(result.message);
+    await refreshAll();
+  } catch (error) {
+    notify(error.message, true);
+  }
+}
+
+function editCourse(course) {
+  editingCid = course.cid;
+  $("cid").value = course.cid;
+  $("cid").disabled = true;
+  $("cname").value = course.cname;
+  $("courseSubmit").textContent = "Save course changes";
+  $("courseCancel").hidden = false;
+  loadStudentOptions(course.sid).then(() =>
+    $("courseFormSection").scrollIntoView({ behavior: "smooth", block: "start" })
+  ).catch(error => notify(error.message, true));
+}
+
+function resetCourseForm() {
+  editingCid = null;
+  $("courseForm").reset();
+  $("cid").disabled = false;
+  $("courseSubmit").textContent = "+ Add course";
+  $("courseCancel").hidden = true;
+}
+
+$("courseCancel").addEventListener("click", resetCourseForm);
+
+$("courseForm").addEventListener("submit", async event => {
+  event.preventDefault();
+  const payload = {
+    cid: $("cid").value.trim(),
+    sid: $("courseSid").value,
+    cname: $("cname").value.trim()
+  };
+
+  try {
+    const result = editingCid
+      ? await api("/api/courses/" + encodeURIComponent(editingCid), {
+          method: "PUT", body: JSON.stringify(payload)
+        })
+      : await api("/api/courses", { method: "POST", body: JSON.stringify(payload) });
+
+    notify(result.message);
+    resetCourseForm();
+    await refreshAll();
+  } catch (error) {
+    notify(error.message, true);
+  }
+});
+
+async function deleteCourse(cid) {
+  if (!confirm(`Delete course ${cid}?`)) return;
+  try {
+    const result = await api("/api/courses/" + encodeURIComponent(cid), { method: "DELETE" });
+    notify(result.message);
+    await refreshAll();
+  } catch (error) {
+    notify(error.message, true);
+  }
+}
+
+$("applyFilter").addEventListener("click", () =>
+  loadStudents().catch(error => notify(error.message, true))
+);
+$("resetFilter").addEventListener("click", () => {
+  $("minMarks").value = "";
+  $("sortBy").value = "sid";
+  $("sortOrder").value = "asc";
+  loadStudents().catch(error => notify(error.message, true));
+});
+
+refreshAll();
+</script>
+</body>
+</html>
